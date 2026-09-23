@@ -1,0 +1,2 @@
+docker/mosquitto/certs/*
+!docker/mosquitto/certs/.gitkeep

@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package transport;
+
+option java_package = "org.example.thingsboard.mqttdemo.proto";
+option java_outer_classname = "TransportProtos";
+
+// 精简自 ThingsBoard common/proto/src/main/proto/queue.proto。
+// 字段编号与源码保持一致，删除了本示例不涉及的消息。
+enum KeyValueType {
+    BOOLEAN_V = 0;
+    LONG_V = 1;
+    DOUBLE_V = 2;
+    STRING_V = 3;
+    JSON_V = 4;
+}
+
+message KeyValueProto {
+    string key = 1;
+    KeyValueType type = 2;
+    bool bool_v = 3;
+    int64 long_v = 4;
+    double double_v = 5;
+    string string_v = 6;
+    string json_v = 7;
+}
+
+message TsKvListProto {
+    int64 ts = 1;
+    repeated KeyValueProto kv = 2;
+}
+
+message PostTelemetryMsg {
+    repeated TsKvListProto tsKvList = 1;
+}
+
+message PostAttributeMsg {
+    repeated KeyValueProto kv = 1;
+    bool shared = 2;
+}
+
+message ToDeviceRpcResponseMsg {
+    int32 requestId = 1;
+    string payload = 2;
+    string error = 3;
+}
+
+message ToServerRpcRequestMsg {
+    int32 requestId = 1;
+    string methodName = 2;
+    string params = 3;
+}
+
+// 精简自 common/proto/src/main/proto/transport.proto，供 ProtoMqttAdaptor 演示 RPC。
+message RpcRequest {
+    string method = 1;
+    string params = 2;
+}
+
+// 对应原源码中的 ValidateBasicMqttCredRequestMsg，供 CONNECT 认证路径使用。
+message ValidateBasicMqttCredRequestMsg {
+    string clientId = 1;
+    string userName = 2;
+    string password = 3;
+}
+
+// 对应 ThingsBoard queue.proto 中的 ValidateDeviceX509CertRequestMsg。
+message ValidateDeviceX509CertRequestMsg {
+    string hash = 1;
+}

@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package device;
+
+option java_package = "org.example.thingsboard.mqttdemo.proto";
+option java_outer_classname = "DevicePayloadProtos";
+
+// 这些 descriptor 模拟 Device Profile 中保存的设备自定义 Protobuf schema。
+// 服务端 adaptor 不依赖这里的 Java message 类型，而是使用 descriptor + DynamicMessage。
+message Telemetry {
+    double temperature = 1;
+    bool active = 2;
+}
+
+message Attributes {
+    string firmware = 1;
+}
+
+message RpcRequest {
+    string method = 1;
+    string params = 2;
+}
+
+message RpcResponse {
+    string payload = 1;
+}

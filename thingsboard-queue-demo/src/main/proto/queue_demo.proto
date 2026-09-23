@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package queuedemo;
+
+option java_package = "org.example.thingsboard.queuedemo.proto";
+option java_outer_classname = "QueueDemoProtos";
+
+message DemoRequest {
+    string requestId = 1;
+    string payload = 2;
+}
+
+message DemoResponse {
+    string requestId = 1;
+    string result = 2;
+}
+
+message Telemetry {
+    string deviceName = 1;
+    int64 ts = 2;
+    double temperature = 3;
+}
