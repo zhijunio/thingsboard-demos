@@ -35,7 +35,7 @@
 ## 运行
 
 ```bash
-cd ~/github/thingsboard-demos/thingsboard-protobuf-demo
+cd thingsboard-protobuf-demo
 mvn clean test
 mvn compile exec:java
 ```

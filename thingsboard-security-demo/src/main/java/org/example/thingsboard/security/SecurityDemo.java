@@ -33,7 +33,7 @@ public final class SecurityDemo {
     public static void main(String[] args) {
         Clock clock = Clock.fixed(Instant.ofEpochSecond(1_700_000_000L), ZoneOffset.UTC);
         JwtTokenFactory tokenFactory = new JwtTokenFactory(
-                "demo-secret-with-at-least-32-characters-long", clock, 3600);
+                "demo-secret-for-thingsboard-security-jwt-0123456789-abcdef-0123456789", clock, 3600);
         PasswordHasher passwordHasher = new PasswordHasher();
         InMemoryUserStore userStore = new InMemoryUserStore(passwordHasher);
         SecurityUser user = userStore.register("tenant@example.com", "tenant-password",

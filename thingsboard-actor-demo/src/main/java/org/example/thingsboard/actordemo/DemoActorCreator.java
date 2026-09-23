@@ -7,12 +7,15 @@ import org.thingsboard.server.actors.TbStringActorId;
 
 public final class DemoActorCreator implements TbActorCreator {
     private final TbActorId actorId;
-    private final DemoState state;
+    private final DeviceState deviceState;
+    private final DemoState metrics;
     private final int failuresBeforeReady;
 
-    public DemoActorCreator(String actorId, DemoState state, int failuresBeforeReady) {
+    public DemoActorCreator(String actorId, DeviceState deviceState, DemoState metrics,
+                            int failuresBeforeReady) {
         this.actorId = new TbStringActorId(actorId);
-        this.state = state;
+        this.deviceState = deviceState;
+        this.metrics = metrics;
         this.failuresBeforeReady = failuresBeforeReady;
     }
 
@@ -23,6 +26,6 @@ public final class DemoActorCreator implements TbActorCreator {
 
     @Override
     public TbActor createActor() {
-        return new DemoActor(state, failuresBeforeReady);
+        return new DemoActor(deviceState, metrics, failuresBeforeReady);
     }
 }

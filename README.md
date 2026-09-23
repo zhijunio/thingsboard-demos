@@ -19,6 +19,7 @@
 | [thingsboard-rule-engine-demo](./thingsboard-rule-engine-demo/) | Rule Chain Actor、Rule Node Actor、关系路由和失败回调 |
 | [thingsboard-device-session-demo](./thingsboard-device-session-demo/) | 设备会话创建、telemetry、RPC 和会话超时 |
 | [thingsboard-cluster-demo](./thingsboard-cluster-demo/) | `TbClusterService`、集群广播、定向转发、hash partition 和拓扑变更 |
+| [thingsboard-security-demo](./thingsboard-security-demo/) | 本地认证、MFA/TOTP、OAuth2/OIDC 登录、JWT 和租户权限校验 |
 
 每个项目都是独立的 Maven 项目，可以单独进入项目目录运行，不依赖 ThingsBoard 主工程。
 
@@ -86,7 +87,8 @@ Cluster Bus / Queue Producer
 以集群示例为例：
 
 ```bash
-cd ~/github/thingsboard-demos/thingsboard-cluster-demo
+git clone git@github.com:zhijunio/thingsboard-demos.git
+cd thingsboard-demos/thingsboard-cluster-demo
 mvn clean test
 mvn compile exec:java \
   -Dexec.mainClass=org.example.thingsboard.cluster.ClusterDemo
@@ -104,7 +106,7 @@ mvn compile exec:java \
 运行单个项目时，通常使用：
 
 ```bash
-cd ~/github/thingsboard-demos/<项目目录>
+cd <项目目录>
 mvn clean test
 ```
 

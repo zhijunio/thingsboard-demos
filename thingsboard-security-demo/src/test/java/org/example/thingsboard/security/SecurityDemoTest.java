@@ -46,7 +46,7 @@ class SecurityDemoTest {
         DefaultTwoFactorAuthService twoFa = new DefaultTwoFactorAuthService(provider);
         TotpTwoFaAccountConfig account = new TotpTwoFaAccountConfig(user.email(), "TB", "JBSWY3DPEHPK3PXP");
         twoFa.saveAccountConfig(account);
-        JwtTokenFactory factory = new JwtTokenFactory("demo-secret-with-at-least-32-characters-long", CLOCK, 60);
+        JwtTokenFactory factory = new JwtTokenFactory("demo-secret-for-thingsboard-security-jwt-0123456789-abcdef-0123456789", CLOCK, 60);
         SecurityAuthenticationService authentication = new SecurityAuthenticationService(
                 userStore, passwordHasher, factory, twoFa);
 
@@ -74,7 +74,7 @@ class SecurityDemoTest {
 
     @Test
     void oauth2ValidatesStateExchangesCodeAndIssuesTbToken() {
-        JwtTokenFactory factory = new JwtTokenFactory("demo-secret-with-at-least-32-characters-long", CLOCK, 60);
+        JwtTokenFactory factory = new JwtTokenFactory("demo-secret-for-thingsboard-security-jwt-0123456789-abcdef-0123456789", CLOCK, 60);
         InMemoryOAuth2Provider provider = new InMemoryOAuth2Provider();
         provider.authorize("one-time-code", new OAuth2UserInfo(Map.of("email", "oauth@example.com")));
         OAuth2LoginService service = new OAuth2LoginService(new OAuth2AuthorizationRequestRepository(),

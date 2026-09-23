@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public final class DemoState {
     private final CountDownLatch processedLatch;
     private final CountDownLatch destroyedLatch = new CountDownLatch(1);
-    private final List<Integer> processedValues = new CopyOnWriteArrayList<>();
+    private final List<String> processedTypes = new CopyOnWriteArrayList<>();
     private final AtomicInteger active = new AtomicInteger();
     private final AtomicInteger maxConcurrent = new AtomicInteger();
     private final AtomicInteger processFailures = new AtomicInteger();
@@ -22,10 +22,10 @@ public final class DemoState {
         this.processedLatch = new CountDownLatch(expectedMessages);
     }
 
-    public void onProcessStart(int value) {
+    public void onProcessStart(String type) {
         int current = active.incrementAndGet();
         maxConcurrent.accumulateAndGet(current, Math::max);
-        processedValues.add(value);
+        processedTypes.add(type);
     }
 
     public void onProcessEnd() {
@@ -50,8 +50,8 @@ public final class DemoState {
         return destroyedLatch.await(timeout, unit);
     }
 
-    public List<Integer> processedValues() {
-        return processedValues;
+    public List<String> processedTypes() {
+        return processedTypes;
     }
 
     public int maxConcurrent() {

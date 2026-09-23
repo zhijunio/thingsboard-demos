@@ -24,15 +24,16 @@ class ActorSystemTest {
         system.createDispatcher("test", executor);
         try {
             DemoState state = new DemoState(2);
-            TbActorRef actor = system.createRootActor("test", new DemoActorCreator("root", state, 1));
-            actor.tell(new DemoMessage(1));
-            actor.tell(new DemoMessage(2, true, null));
-            actor.tell(new DemoMessage(3));
+            TbActorRef actor = system.createRootActor("test", new DemoActorCreator(
+                    "root", new DeviceState(), state, 1));
+            actor.tell(DemoMessage.connect("session-1"));
+            actor.tell(DemoMessage.failure());
+            actor.tell(DemoMessage.telemetry("temperature", 21.5));
 
             assertTrue(state.awaitProcessed(2, TimeUnit.SECONDS));
             assertEquals(1, state.maxConcurrent());
             assertEquals(1, state.processFailures());
-            assertEquals(2, state.processedValues().size());
+            assertEquals(2, state.processedTypes().size());
         } finally {
             system.stop();
         }
@@ -45,10 +46,11 @@ class ActorSystemTest {
         system.createDispatcher("test", executor);
         try {
             DemoState state = new DemoState(0);
-            TbActorRef actor = system.createRootActor("test", new DemoActorCreator("root", state, 0));
+            TbActorRef actor = system.createRootActor("test", new DemoActorCreator(
+                    "root", new DeviceState(), state, 0));
             AtomicReference<TbActorStopReason> stopped = new AtomicReference<>();
-            actor.tell(new DemoMessage(1, false, stopped));
-            actor.tell(new DemoMessage(2, false, stopped));
+            actor.tell(DemoMessage.telemetry("temperature", 21.5, stopped));
+            actor.tell(DemoMessage.telemetry("humidity", 45, stopped));
             system.stop(actor);
 
             long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(2);

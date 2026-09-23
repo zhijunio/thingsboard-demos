@@ -83,7 +83,7 @@ Temperature >= 20
 ## 运行测试
 
 ```bash
-cd ~/github/thingsboard-demos/thingsboard-rule-engine-demo
+cd thingsboard-rule-engine-demo
 mvn clean test
 ```
 

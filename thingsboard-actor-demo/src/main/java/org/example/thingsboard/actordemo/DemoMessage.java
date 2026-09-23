@@ -8,26 +8,63 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 public final class DemoMessage implements TbActorMsg {
-    private final int value;
-    private final boolean fail;
-    private final AtomicReference<TbActorStopReason> stoppedReason;
-
-    public DemoMessage(int value) {
-        this(value, false, null);
+    public enum Type {
+        CONNECT,
+        TELEMETRY,
+        RPC_REQUEST,
+        FAIL
     }
 
-    public DemoMessage(int value, boolean fail, AtomicReference<TbActorStopReason> stoppedReason) {
+    private final Type type;
+    private final String value;
+    private final double numericValue;
+    private final String params;
+    private final AtomicReference<TbActorStopReason> stoppedReason;
+
+    private DemoMessage(Type type, String value, double numericValue, String params,
+                        AtomicReference<TbActorStopReason> stoppedReason) {
+        this.type = type;
         this.value = value;
-        this.fail = fail;
+        this.numericValue = numericValue;
+        this.params = params;
         this.stoppedReason = stoppedReason;
     }
 
-    public int value() {
+    public static DemoMessage connect(String sessionId) {
+        return new DemoMessage(Type.CONNECT, sessionId, 0, null, null);
+    }
+
+    public static DemoMessage telemetry(String key, double value) {
+        return new DemoMessage(Type.TELEMETRY, key, value, null, null);
+    }
+
+    public static DemoMessage rpcRequest(String method, String params) {
+        return new DemoMessage(Type.RPC_REQUEST, method, 0, params, null);
+    }
+
+    public static DemoMessage failure() {
+        return new DemoMessage(Type.FAIL, null, 0, null, null);
+    }
+
+    public static DemoMessage telemetry(String key, double value,
+                                        AtomicReference<TbActorStopReason> stoppedReason) {
+        return new DemoMessage(Type.TELEMETRY, key, value, null, stoppedReason);
+    }
+
+    public Type type() {
+        return type;
+    }
+
+    public String value() {
         return value;
     }
 
-    public boolean fail() {
-        return fail;
+    public double numericValue() {
+        return numericValue;
+    }
+
+    public String params() {
+        return params;
     }
 
     @Override

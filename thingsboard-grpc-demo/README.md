@@ -54,7 +54,7 @@ service EdgeRpcService {
 ## 运行
 
 ```bash
-cd ~/github/thingsboard-demos/thingsboard-grpc-demo
+cd thingsboard-grpc-demo
 mvn compile exec:java
 ```
 

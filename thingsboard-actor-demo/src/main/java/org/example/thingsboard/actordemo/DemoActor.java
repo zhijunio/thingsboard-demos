@@ -8,12 +8,14 @@ import org.thingsboard.server.common.msg.TbActorMsg;
 import org.thingsboard.server.common.msg.TbActorStopReason;
 
 public final class DemoActor extends AbstractTbActor {
-    private final DemoState state;
+    private final DeviceState deviceState;
+    private final DemoState metrics;
     private final int failuresBeforeReady;
     private int initAttempts;
 
-    public DemoActor(DemoState state, int failuresBeforeReady) {
-        this.state = state;
+    public DemoActor(DeviceState deviceState, DemoState metrics, int failuresBeforeReady) {
+        this.deviceState = deviceState;
+        this.metrics = metrics;
         this.failuresBeforeReady = failuresBeforeReady;
     }
 
@@ -28,14 +30,22 @@ public final class DemoActor extends AbstractTbActor {
     @Override
     public boolean process(TbActorMsg msg) {
         DemoMessage demoMessage = (DemoMessage) msg;
-        if (demoMessage.fail()) {
+        if (demoMessage.type() == DemoMessage.Type.FAIL) {
             throw new IllegalStateException("demo process failure");
         }
-        state.onProcessStart(demoMessage.value());
+        metrics.onProcessStart(demoMessage.type().name());
         try {
+            switch (demoMessage.type()) {
+                case CONNECT -> deviceState.connect(demoMessage.value());
+                case TELEMETRY -> deviceState.updateTelemetry(
+                        demoMessage.value(), demoMessage.numericValue());
+                case RPC_REQUEST -> deviceState.recordRpc(
+                        demoMessage.value(), demoMessage.params());
+                case FAIL -> throw new IllegalStateException("demo process failure");
+            }
             return true;
         } finally {
-            state.onProcessEnd();
+            metrics.onProcessEnd();
         }
     }
 
@@ -46,12 +56,12 @@ public final class DemoActor extends AbstractTbActor {
 
     @Override
     public ProcessFailureStrategy onProcessFailure(TbActorMsg msg, Throwable error) {
-        state.onProcessFailure();
+        metrics.onProcessFailure();
         return ProcessFailureStrategy.resume();
     }
 
     @Override
     public void destroy(TbActorStopReason stopReason, Throwable cause) {
-        state.onDestroy(stopReason);
+        metrics.onDestroy(stopReason);
     }
 }

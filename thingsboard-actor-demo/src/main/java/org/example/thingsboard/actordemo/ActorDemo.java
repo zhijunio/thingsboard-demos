@@ -20,16 +20,21 @@ public final class ActorDemo {
 
         DemoState state = new DemoState(3);
         DemoState childState = new DemoState(1);
+        DeviceState deviceState = new DeviceState();
+        DeviceState childDeviceState = new DeviceState();
         TbActorRef root = actorSystem.createRootActor(
-                "demo-dispatcher", new DemoActorCreator("demo-root", state, 1));
+                "demo-dispatcher", new DemoActorCreator("demo-root", deviceState, state, 1));
         TbActorRef child = actorSystem.createChildActor(
-                "demo-dispatcher", new DemoActorCreator("demo-device-1", childState, 0), root.getActorId());
+                "demo-dispatcher",
+                new DemoActorCreator("demo-device-1", childDeviceState, childState, 0),
+                root.getActorId());
 
-        root.tell(new DemoMessage(1));
-        root.tell(new DemoMessage(2));
-        root.tell(new DemoMessage(3, true, null));
-        root.tellWithHighPriority(new DemoMessage(99));
-        actorSystem.broadcastToChildren(root.getActorId(), new DemoMessage(7));
+        root.tell(DemoMessage.connect("session-1"));
+        root.tell(DemoMessage.telemetry("temperature", 21.5));
+        root.tell(DemoMessage.failure());
+        root.tellWithHighPriority(DemoMessage.rpcRequest("reboot", "{}"));
+        actorSystem.broadcastToChildren(
+                root.getActorId(), DemoMessage.telemetry("broadcast", 1));
 
         if (!state.awaitProcessed(5, TimeUnit.SECONDS)) {
             throw new IllegalStateException("actor did not process all successful messages");
@@ -37,10 +42,14 @@ public final class ActorDemo {
         if (!childState.awaitProcessed(5, TimeUnit.SECONDS)) {
             throw new IllegalStateException("child actor did not process broadcast message");
         }
-        System.out.println("[Actor] processed=" + state.processedValues());
+        System.out.println("[Actor] processed=" + state.processedTypes());
         System.out.println("[Actor] maxConcurrent=" + state.maxConcurrent());
         System.out.println("[Actor] processFailures=" + state.processFailures());
-        System.out.println("[Actor] child=" + child.getActorId() + ", childProcessed=" + childState.processedValues());
+        System.out.println("[Actor] child=" + child.getActorId() + ", childProcessed=" + childState.processedTypes());
+        System.out.println("[Device] session=" + deviceState.sessionId());
+        System.out.println("[Device] telemetry=" + deviceState.telemetry());
+        System.out.println("[Device] lastRpc=" + deviceState.lastRpcMethod()
+                + " " + deviceState.lastRpcParams());
 
         actorSystem.stop(root);
         state.awaitDestroyed(2, TimeUnit.SECONDS);

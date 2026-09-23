@@ -23,12 +23,19 @@ public final class SecurityAuthenticationService {
     }
 
     public LoginResponse login(String username, String password) {
+        return issueLoginResponse(authenticatePassword(username, password));
+    }
+
+    public SecurityUser authenticatePassword(String username, String password) {
         InMemoryUserStore.UserAccount account = userStore.find(username)
                 .orElseThrow(() -> new AuthenticationFailureException("Bad credentials"));
         if (!account.enabled() || !passwordHasher.matches(password, account.passwordHash())) {
             throw new AuthenticationFailureException("Bad credentials");
         }
-        SecurityUser user = account.securityUser();
+        return account.securityUser();
+    }
+
+    public LoginResponse issueLoginResponse(SecurityUser user) {
         if (twoFactorAuthService.isTwoFaEnabled(user.email())) {
             SecurityUser preVerificationUser = new SecurityUser(user.id(), user.email(), user.tenantId(),
                     Authority.PRE_VERIFICATION_TOKEN, user.enabled());

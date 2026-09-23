@@ -45,7 +45,7 @@
 没有 ThingsBoard 或设备 token 时，可以先运行 dry-run：
 
 ```bash
-cd ~/github/thingsboard-demos/thingsboard-mqtt-demo
+cd thingsboard-mqtt-demo
 mvn compile exec:java -Dexec.args="--dry-run"
 ```
 
