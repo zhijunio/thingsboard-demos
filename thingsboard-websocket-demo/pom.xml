@@ -11,7 +11,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>17</maven.compiler.release>
-        <java-websocket.version>1.5.2</java-websocket.version>
+        <java-websocket.version>1.6.0</java-websocket.version>
         <gson.version>2.10.1</gson.version>
         <spring-boot.version>3.5.16</spring-boot.version>
         <junit.version>5.12.2</junit.version>
