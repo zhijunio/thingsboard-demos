@@ -16,7 +16,7 @@
         <kafka.version>3.9.2</kafka.version>
         <guava.version>33.1.0-jre</guava.version>
         <testcontainers.version>1.20.6</testcontainers.version>
-        <junit.version>5.12.2</junit.version>
+        <junit.version>5.14.4</junit.version>
     </properties>
 
     <dependencies>
